@@ -26,31 +26,31 @@ Change the JWT_SECRET and PAGINATION_LIMIT to what you want
 
 # Install Dependencies (frontend & backend)
 
-npm install
+    npm install
 
-cd frontend
+    cd frontend
 
-npm install
+    npm install
 
 
 
 
 # Run frontend (:3000) & backend (:5000)
 
-npm run dev
+    npm run dev
 
 # Run backend only
 
-npm run server
+    npm run server
 
 
 # Build & Deploy
 
 # Create frontend prod build
 
-cd frontend
+    cd frontend
 
-npm run build
+    npm run build
 
 # Seed Database
 
@@ -58,11 +58,11 @@ You can use the following commands to seed the database with some sample users a
 
 # Import data
 
-npm run data:import
+    npm run data:import
 
 # Destroy data
 
-npm run data:destroy
+    npm run data:destroy
 
 # Sample User Logins
 
