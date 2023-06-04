@@ -1,13 +1,28 @@
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
+import { useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+} from "react-bootstrap";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { useGetProductDetailsQuery } from "../slices/productsApiSlice";
+import { addToCart } from "../slices/cartSlice";
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
+
+  const [qty, setQty] = useState(1);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     data: product,
@@ -15,12 +30,18 @@ const ProductScreen = () => {
     error,
   } = useGetProductDetailsQuery(productId);
 
+  const addToCardHandler = () => {
+    // Add item to cart
+    dispatch(addToCart({ ...product, qty }));
+    navigate(`/cart`);
+  };
+
   return (
     <>
       <Link className="btn btn-light my-3" to="/">
         Go Back
       </Link>
-    
+
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -61,6 +82,34 @@ const ProductScreen = () => {
                     </Col>
                   </Row>
                 </ListGroup.Item>
+
+                {/* Check if product is in stock */}
+                {product.countInStock > 0 && (
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Qty</Col>
+                      <Col>
+                        <Form.Control
+                          as="select"
+                          value={qty}
+                          onChange={(e) => {
+                            setQty(Number(e.target.value));
+                          }}
+                        >
+                          {/* Create an array of numbers from 0 to countInStock */}
+                          {[...Array(product.countInStock).keys()].map(
+                            (num) => (
+                              <option key={num + 1} value={num + 1}>
+                                {num + 1}
+                              </option>
+                            )
+                          )}
+                        </Form.Control>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                )}
+
                 <ListGroup.Item>
                   <Row>
                     <Col>Status:</Col>
@@ -74,6 +123,7 @@ const ProductScreen = () => {
                     className="btn-block"
                     type="button"
                     disabled={product.countInStock === 0}
+                    onClick={addToCardHandler}
                   >
                     Add to Cart
                   </Button>
